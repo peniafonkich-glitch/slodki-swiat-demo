@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słodki Świat, torty artystyczne, Kraków Bieżanów</title>
+<meta name="description" content="Słodki Świat, pracownia tortów artystycznych w Krakowie, ul. Bieżanowska 311. Torty dekorowane ręcznie, 26 smaków, torty weselne, komunijne, drip cake i torty 3D.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --choc: #2B1712;
+    --choc-2: #3A2019;
+    --rasp: #E0457B;
+    --rasp-dk: #B72A5E;
+    --vanilla: #FFF0DC;
+    --gold: #D9B15C;
+    --head: "DM Serif Display", Georgia, serif;
+    --body: "Nunito Sans", system-ui, sans-serif;
+    --gut: clamp(18px, 5vw, 72px);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--choc); color: var(--vanilla); font: 400 18px/1.65 var(--body); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .skip { position: absolute; left: -999px; top: 8px; background: var(--rasp); color: #fff; padding: 10px 16px; z-index: 50; }
+  .skip:focus { left: 8px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px var(--gut); }
+  .mark { font: 400 26px/1 var(--head); text-decoration: none; }
+  .mark i { color: var(--rasp); font-style: italic; }
+  .btn { display: inline-block; padding: 14px 26px; border-radius: 999px; background: var(--rasp); color: #fff; font: 700 17px/1.1 var(--body); text-decoration: none; transition: background-color .2s, transform .15s; }
+  .btn:hover { background: var(--rasp-dk); }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost { background: transparent; color: var(--vanilla); box-shadow: inset 0 0 0 2px rgba(255, 240, 220, .6); }
+  .btn.ghost:hover { background: var(--vanilla); color: var(--choc); }
+
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(8px, 3vw, 48px); align-items: center; padding: clamp(12px, 3vw, 36px) var(--gut) clamp(40px, 7vw, 100px); }
+  h1 { font: 400 clamp(54px, 9vw, 132px)/.95 var(--head); }
+  h1 em { display: block; color: var(--rasp); }
+  .lead { margin-top: 24px; max-width: 29em; font-size: clamp(18px, 1.9vw, 22px); }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .stage { position: relative; aspect-ratio: 1 / 1.1; }
+  .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; cursor: pointer; }
+  .stage.has3d canvas { display: block; }
+  .fbc { position: absolute; left: 22%; right: 22%; bottom: 14%; height: 56%; background: linear-gradient(#F7C6D3 0 38%, #FFF4E6 38% 70%, #4A2A1E 70%); border-radius: 12px; }
+  .has3d .fbc { display: none; }
+  .hint { position: absolute; right: 0; bottom: 0; font-size: 15px; color: rgba(255, 240, 220, .7); }
+
+  section { padding: clamp(44px, 7vw, 100px) var(--gut); }
+  h2 { font: 400 clamp(34px, 5vw, 66px)/1.02 var(--head); }
+  h2 em { color: var(--rasp); }
+
+  /* Rodzaje tortów, napisane jak z cukierniczej witryny */
+  .kinds { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-top: 30px; align-items: baseline; }
+  .kinds li { font: 400 clamp(22px, 3.2vw, 44px)/1.1 var(--head); padding: 4px 14px 6px; border-radius: 999px; box-shadow: inset 0 0 0 2px rgba(255, 240, 220, .35); transition: background-color .2s, color .2s, box-shadow .2s; }
+  .kinds li:nth-child(3n) { font-style: italic; }
+  .kinds li:nth-child(4n+1) { font-size: clamp(26px, 4vw, 54px); }
+  .kinds li:hover { background: var(--rasp); box-shadow: none; }
+  .note { margin-top: 22px; max-width: 38em; color: #E8D3BC; }
+
+  /* Smaki jako przekrój tortu */
+  .smaki { background: var(--choc-2); }
+  .smaki-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 5vw, 80px); align-items: start; margin-top: 34px; }
+  .flist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 20px; max-height: 560px; overflow: auto; padding-right: 8px; scrollbar-width: thin; scrollbar-color: var(--rasp) transparent; }
+  .flist button { width: 100%; text-align: left; padding: 10px 12px; border: 0; border-radius: 10px; background: transparent; color: inherit; font: 600 17px/1.3 var(--body); cursor: pointer; transition: background-color .2s; }
+  .flist button:hover { background: rgba(255, 240, 220, .09); }
+  .flist button[aria-pressed="true"] { background: var(--rasp); color: #fff; }
+  .slice { position: sticky; top: 24px; }
+  .plate { position: relative; height: 330px; display: grid; place-items: end center; padding-bottom: 26px; }
+  .plate::after { content: ""; position: absolute; left: 6%; right: 6%; bottom: 6px; height: 22px; border-radius: 50%; background: #F4EDE4; box-shadow: 0 6px 0 #CFC4B6; }
+  .cut { position: relative; z-index: 1; width: min(78%, 300px); display: flex; flex-direction: column-reverse; filter: drop-shadow(0 8px 0 rgba(0, 0, 0, .25)); }
+  .lay { height: 0; opacity: 0; transform-origin: bottom; animation: rise .45s cubic-bezier(.3, 1.4, .5, 1) forwards; animation-delay: calc(var(--i) * 70ms); }
+  .lay.s { --h: 36px; } .lay.f { --h: 20px; }
+  @keyframes rise { to { height: var(--h); opacity: 1; } }
+  .lay:first-child { border-radius: 0 0 10px 10px; } .lay:last-child { border-radius: 14px 14px 0 0; }
+  .icing { height: 12px; background: var(--rasp); border-radius: 14px 14px 0 0; margin-bottom: -1px; }
+  .sname { margin-top: 12px; font: 400 clamp(26px, 3vw, 38px)/1.1 var(--head); }
+  .sdesc { margin-top: 6px; color: #E8D3BC; }
+  .sfoot { margin-top: 22px; max-width: 40em; color: #E8D3BC; }
+
+  .how { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(24px, 6vw, 90px); align-items: start; }
+  .how ol { counter-reset: s; display: grid; gap: 22px; }
+  .how li { counter-increment: s; position: relative; padding-left: 60px; }
+  .how li::before { content: counter(s); position: absolute; left: 0; top: -4px; width: 42px; height: 42px; border-radius: 50%; background: var(--rasp); color: #fff; display: grid; place-items: center; font: 400 22px/1 var(--head); }
+  .how li b { display: block; font: 400 24px/1.2 var(--head); margin-bottom: 4px; }
+
+  .info { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 6vw, 90px); align-items: start; }
+  dl.f { display: grid; grid-template-columns: max-content 1fr; gap: 14px 28px; margin-top: 28px; }
+  dl.f dt { color: #CDB79F; }
+  dl.f dd { min-width: 0; overflow-wrap: anywhere; }
+  dl.f a { text-underline-offset: 4px; }
+  .map { border-radius: 18px; overflow: hidden; border: 3px solid var(--gold); aspect-ratio: 4 / 3; background: #444; }
+  .map iframe { display: block; width: 100%; height: 100%; border: 0; filter: sepia(.25) saturate(.9); }
+  .ml { margin-top: 12px; font-size: 16px; color: #CDB79F; }
+
+  footer { padding: 34px var(--gut) 56px; background: #1E100C; color: #CDB79F; font-size: 15px; }
+  footer p { max-width: 64em; }
+  footer p + p { margin-top: 8px; }
+
+  @media (max-width: 860px) {
+    .hero, .smaki-grid, .how, .info { grid-template-columns: 1fr; }
+    .stage { max-width: 520px; width: 100%; margin-inline: auto; }
+    .slice { position: static; }
+  }
+  @media (max-width: 560px) { .flist { grid-template-columns: 1fr; max-height: 420px; } dl.f { grid-template-columns: 1fr; gap: 2px 0; } dl.f dd { margin-bottom: 16px; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .lay { animation: none; height: var(--h); opacity: 1; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Przejdź do treści</a>
+<header>
+  <a class="mark" href="#top">Słodki <i>Świat</i></a>
+  <a class="btn" href="tel:+48889264871">889 264 871</a>
+</header>
+
+<main id="main">
+  <div class="hero" id="top">
+    <div>
+      <h1>Słodki <em>Świat</em></h1>
+      <p class="lead">Pracownia tortów artystycznych w Krakowie, na Starym Bieżanowie. Dekoracje robię ręcznie, a kremy, musy i masę cukrową od podstaw, z naturalnych składników.</p>
+      <div class="row">
+        <a class="btn" href="https://wa.me/48889264871" target="_blank" rel="noopener">Napisz na WhatsApp</a>
+        <a class="btn ghost" href="#smaki">Zobacz smaki</a>
+      </div>
+    </div>
+    <div class="stage" id="stage-box">
+      <div class="fbc" aria-hidden="true"></div>
+      <canvas id="stage" role="img" aria-label="Trójwymiarowy tort trzypiętrowy z perełkami, różami z masy cukrowej i czekoladowym ociekiem"></canvas>
+      <p class="hint" aria-hidden="true">Kliknij tort, zapalisz świeczkę</p>
+    </div>
+  </div>
+
+  <section aria-labelledby="rodzaje">
+    <h2 id="rodzaje">Torty na każdą <em>okazję</em></h2>
+    <ul class="kinds">
+      <li>Torty dla dzieci</li><li>Drip cake</li><li>Okolicznościowe</li><li>Weselne</li><li>Komunijne</li><li>Na chrzest</li><li>Dla dorosłych</li><li>Firmowe</li><li>Torty 3D</li><li>Świąteczne</li><li>Babeczki artystyczne</li>
+    </ul>
+    <p class="note">Galeria na stronie to nie katalog. Możesz przysłać wzór z internetu albo opisać swój pomysł na dekorację, a ja zrobię coś nowego.</p>
+  </section>
+
+  <section class="smaki" id="smaki" aria-labelledby="sm">
+    <h2 id="sm">26 smaków, <em>warstwa po warstwie</em></h2>
+    <div class="smaki-grid">
+      <div class="flist" id="flist" role="group" aria-label="Lista smaków"></div>
+      <div class="slice" aria-live="polite">
+        <div class="plate"><div class="cut" id="cut"></div></div>
+        <p class="sname" id="sname"></p>
+        <p class="sdesc" id="sdesc"></p>
+      </div>
+    </div>
+    <p class="sfoot">Wszystkie masy są na bazie masy budyniowej z masłem. Na specjalne życzenie można zamienić ją na bitą śmietanę. Przekrój jest poglądowy.</p>
+  </section>
+
+  <section aria-labelledby="zam">
+    <div class="how">
+      <h2 id="zam">Jak zamówić tort</h2>
+      <ol>
+        <li><b>Napisz albo zadzwoń</b>Podaj, na ile porcji ma być tort i jaka dekoracja. Tortów nie wyceniam od kilograma, bo każdy waży inaczej. Najmniejszy okrągły robię na 12 porcji.</li>
+        <li><b>Dostaniesz wycenę</b>Zależy od porcji i dekoracji. Możesz dołączyć wzór z internetu albo własny pomysł.</li>
+        <li><b>Zarezerwuj termin</b>Zamówienia przyjmuję co najmniej 3 dni przed odbiorem, ale lepiej wcześniej, bo biorę ograniczoną liczbę zamówień. Torty weselne minimum miesiąc wcześniej.</li>
+        <li><b>Odbierz tort</b>Odbiór osobisty w pracowni. Zapłacisz Blikiem lub gotówką.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="info" id="kontakt" aria-labelledby="gdzie">
+    <div>
+      <h2 id="gdzie">Gdzie jestem</h2>
+      <dl class="f">
+        <dt>Adres</dt><dd>ul. Bieżanowska 311, Stary Bieżanów<br>30-836 Kraków (przecznica z ul. Stacyjną)</dd>
+        <dt>Telefon</dt><dd><a href="tel:+48889264871">889 264 871</a>, też WhatsApp</dd>
+        <dt>E-mail</dt><dd><a href="mailto:torty.krakow@op.pl">torty.krakow@op.pl</a></dd>
+        <dt>Facebook</dt><dd><a href="https://www.facebook.com/slodkiswiatkrakow" target="_blank" rel="noopener">Słodki Świat, zdjęcia tortów</a></dd>
+        <dt>Godziny</dt><dd>zależą od bieżącego harmonogramu pracy, najpierw zadzwoń</dd>
+      </dl>
+    </div>
+    <div>
+      <div class="map">
+        <iframe title="Mapa: pracownia Słodki Świat, ul. Bieżanowska 311, Kraków" loading="lazy" referrerpolicy="no-referrer" src="https://www.openstreetmap.org/export/embed.html?bbox=20.0316%2C50.0172%2C20.0376%2C50.0200&amp;layer=mapnik&amp;marker=50.0186344%2C20.0346226"></iframe>
+      </div>
+      <p class="ml">Otwórz w: <a href="https://www.google.com/maps/search/?api=1&amp;query=50.0186344,20.0346226" target="_blank" rel="noopener">Google Maps</a>, <a href="https://www.openstreetmap.org/?mlat=50.0186344&amp;mlon=20.0346226#map=18/50.0186344/20.0346226" target="_blank" rel="noopener">OpenStreetMap</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>To makieta strony przygotowana jako propozycja dla pracowni. Nie jest oficjalną stroną Słodki Świat. Opisy smaków, zasady zamówień, adres i dane kontaktowe pochodzą z obecnej strony pracowni.</p>
+  <p>Zdjęcia tortów autorki nie zostały użyte, bo jej strona zastrzega do nich prawa autorskie. Tort i przekroje to ilustracje poglądowe.</p>
+</footer>
+
+<script>
+  // Smaki: warstwy od dołu. V biszkopt śmietankowy, C czekoladowy, w masa śmietankowa/budyniowa, h masa czekoladowa,
+  // r owoce czerwone, y owoce żółte i cytryna, n orzechy i karmel, o kokos, k kawa, e Oreo
+  const COL = { V: '#F2D7A1', C: '#5B3023', w: '#FFF3D6', h: '#3A1C14', r: '#C8305B', y: '#F0C23A', n: '#B67B3A', o: '#F7F2E8', k: '#8C6247', e: '#4C4B52' };
+  const F = [
+    ['Malina', 'VyVrV', '3 biszkopty śmietankowe, masa lemon curd lub śmietankowa i maliny w galaretce'],
+    ['Malina z czekoladą', 'ChCwrV', '2 biszkopty czekoladowe i 1 śmietankowy, masa czekoladowa z chrupkami, masa śmietankowa z malinami w galaretce'],
+    ['Czekoladowy z wiśniami', 'ChCrC', '3 biszkopty czekoladowe przełożone masą czekoladową i frużeliną wiśniową'],
+    ['Ananasowy', 'VyVyV', '3 śmietankowe biszkopty lekko naponczowane kawą, masa ananasowa z mleczną czekoladą'],
+    ['Śmietankowo-czekoladowy', 'CwChV', '2 biszkopty czekoladowe i 1 śmietankowy, warstwa masy budyniowej i warstwa masy czekoladowej'],
+    ['Rafaello', 'VoVoV', '3 biszkopty śmietankowe i masa rafaello z kokosem i migdałami'],
+    ['Brzoskwinia z czekoladą', 'VwyVhC', '2 biszkopty śmietankowe i 1 czekoladowy, masa budyniowa, brzoskwinie, mleczna i gorzka czekolada w kosteczkę'],
+    ['Jabłkowy', 'VwyVyC', '2 biszkopty śmietankowe i 1 czekoladowy, masa budyniowa, jabłka w galaretce w 2 smakach'],
+    ['Czekoladowy', 'ChChC', '3 biszkopty czekoladowe i 2 masy czekoladowe'],
+    ['Śmietankowy z wiśniami', 'VwrVwC', '2 biszkopty śmietankowe i 1 czekoladowy, masa budyniowa, frużelina z wiśniami'],
+    ['Orzechowy', 'CnCnC', '3 biszkopty czekoladowe ponczowane kawą i masa orzechowa'],
+    ['Cappuccino', 'VkVkC', '2 biszkopty śmietankowe i 1 czekoladowy, masa cappuccino'],
+    ['Ambasador', 'VyVhC', '2 biszkopty śmietankowe i 1 czekoladowy, masa ambasador: jasna z ananasami, ciemna z kakao, czekoladą, rodzynkami i orzechami'],
+    ['Chałwa', 'VnVnV', '3 biszkopty śmietankowe i masa chałwowa'],
+    ['Snickers', 'VnVhC', '2 biszkopty śmietankowe i 1 czekoladowy, masa snickers: śmietankowa, czekoladowa, toffi, słone orzeszki, krakersy'],
+    ['Toffi', 'VnVnC', '2 biszkopty śmietankowe i 1 czekoladowy, masa toffi'],
+    ['Kokosowy', 'VoVoV', '3 biszkopty śmietankowe i masa kokosowa'],
+    ['Czekoladowo-orzechowy', 'ChCnC', '3 biszkopty czekoladowe, masa czekoladowa i masa orzechowa'],
+    ['Stracciatella', 'VhVwV', '3 biszkopty śmietankowe i masa stracciatella'],
+    ['Jagodowy (w sezonie)', 'VwrVwC', '2 biszkopty śmietankowe i 1 czekoladowy, masa budyniowa, jagody w galaretce'],
+    ['Truskawka', 'VwrVwV', '3 biszkopty śmietankowe, masa budyniowa i żelka truskawkowa'],
+    ['Mango', 'VwyVwV', '3 biszkopty śmietankowe, masa budyniowa i żelka mango'],
+    ['Mango i malina', 'VwyrVwV', '3 biszkopty śmietankowe, masa budyniowa, żelka mango i frużelina malinowa'],
+    ['Oreo', 'CeCeC', '3 biszkopty czekoladowe i masa z ciastkami Oreo'],
+    ['Oreo z maliną', 'CerCeC', '3 biszkopty czekoladowe, masa z ciastkami Oreo i frużelina malinowa'],
+    ['Porzeczkowiec', 'CwrCwC', '3 biszkopty czekoladowe, masa budyniowa i konfitura z porzeczki']
+  ];
+  const list = document.getElementById('flist'), cut = document.getElementById('cut'), sn = document.getElementById('sname'), sd = document.getElementById('sdesc');
+  F.forEach((f, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = f[0]; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => show(i)); list.append(b); });
+  function show(i) {
+    [...list.children].forEach((b, k) => b.setAttribute('aria-pressed', k === i));
+    const [name, code, desc] = F[i];
+    cut.innerHTML = '<div class="icing"></div>' + [...code].map((c, k) => `<div class="lay ${/[VC]/.test(c) ? 's' : 'f'}" style="--i:${k};background:${COL[c]}"></div>`).reverse().join('');
+    // kolejność w DOM: pierwsza warstwa na dole (flex column-reverse), lukier na górze
+    cut.innerHTML = [...code].map((c, k) => `<div class="lay ${/[VC]/.test(c) ? 's' : 'f'}" style="--i:${k};background:${COL[c]}"></div>`).join('') + '<div class="icing"></div>';
+    sn.textContent = name; sd.textContent = desc;
+  }
+  show(0);
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  if (!window.THREE) return;
+  const canvas = document.getElementById('stage'), box = document.getElementById('stage-box');
+  const mq = matchMedia('(prefers-reduced-motion: reduce)'); let still = mq.matches;
+  let renderer; try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true }); } catch (e) { return; }
+  box.classList.add('has3d');
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.outputEncoding = THREE.sRGBEncoding;
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, .9, .1, 100); camera.position.set(0, 2.2, 15); camera.lookAt(0, 1.2, 0);
+  scene.add(new THREE.HemisphereLight(0xfff1e0, 0x6a3b32, .85));
+  const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(4, 7, 6); scene.add(key);
+  const glow = new THREE.PointLight(0xffa24d, 0, 14); glow.position.set(0, 6.4, 0); scene.add(glow);
+  const lin = hex => new THREE.Color(hex).convertSRGBToLinear();
+  const M = (hex, r = .55, m = 0) => new THREE.MeshStandardMaterial({ color: lin(hex), roughness: r, metalness: m });
+  const pink = M(0xF4B6C8, .5), white = M(0xFFF3E6, .5), choc = M(0x3E2118, .28), rasp = M(0xC8244F, .45), gold = M(0xD9B15C, .3, .8), glass = new THREE.MeshStandardMaterial({ color: lin(0xffffff), roughness: .08, transparent: true, opacity: .35 });
+
+  const cake = new THREE.Group(); scene.add(cake);
+  // Patera na nóżce
+  const put = (g, mat, y, parent = cake) => { const m = new THREE.Mesh(g, mat); m.position.y = y; parent.add(m); return m; };
+  put(new THREE.CylinderGeometry(3.1, 3.1, .14, 72), glass, .07);
+  put(new THREE.CylinderGeometry(.55, .9, .5, 32), gold, -.2);
+  // Piętra
+  const t1 = put(new THREE.CylinderGeometry(2.4, 2.4, 1.5, 72), pink, .14 + .75);
+  const t2 = put(new THREE.CylinderGeometry(1.7, 1.7, 1.3, 72), white, .14 + 1.5 + .65);
+  const t3 = put(new THREE.CylinderGeometry(1.1, 1.1, 1.1, 72), pink, .14 + 1.5 + 1.3 + .55);
+  const y1 = .14 + 1.5, y2 = y1 + 1.3, y3 = y2 + 1.1;
+  // Wstążka na drugim piętrze
+  put(new THREE.CylinderGeometry(1.72, 1.72, .26, 72, 1, true), rasp, y1 + .65).material.side = THREE.DoubleSide;
+  // Perełki wokół dołu pierwszego piętra
+  const pearl = new THREE.SphereGeometry(.085, 14, 10);
+  for (let i = 0; i < 52; i++) { const a = i / 52 * Math.PI * 2; const p = new THREE.Mesh(pearl, white); p.position.set(Math.cos(a) * 2.42, .14 + .1, Math.sin(a) * 2.42); cake.add(p); }
+  for (let i = 0; i < 40; i++) { const a = i / 40 * Math.PI * 2; const p = new THREE.Mesh(pearl, gold); p.position.set(Math.cos(a) * 1.72, y1 + .1, Math.sin(a) * 1.72); cake.add(p); }
+  // Czekoladowy oblew z zaciekami na górnym piętrze
+  const top = put(new THREE.CylinderGeometry(1.13, 1.13, .14, 72), choc, y3 + .02);
+  for (let i = 0; i < 16; i++) {
+    const a = i / 16 * Math.PI * 2, len = .25 + ((i * 37) % 7) / 7 * .55;
+    const d = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, len, 12), choc); d.position.set(Math.cos(a) * 1.1, y3 - len / 2 + .05, Math.sin(a) * 1.1); cake.add(d);
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(.09, 12, 10), choc); tip.position.set(Math.cos(a) * 1.1, y3 - len + .05, Math.sin(a) * 1.1); cake.add(tip);
+  }
+  // Maliny i listki na szczycie
+  const berry = new THREE.IcosahedronGeometry(.2, 1);
+  [[.5, .2], [-.4, .45], [.1, -.55], [-.55, -.3]].forEach(([x, z]) => { const b = new THREE.Mesh(berry, rasp); b.position.set(x, y3 + .22, z); cake.add(b); });
+  // Róże z masy cukrowej na krawędzi pierwszego piętra
+  const petal = new THREE.SphereGeometry(.2, 16, 10);
+  const rose = (x, z, y, mat) => { const g = new THREE.Group(); for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; const p = new THREE.Mesh(petal, mat); p.scale.set(1, .55, 1); p.position.set(Math.cos(a) * .17, 0, Math.sin(a) * .17); p.rotation.z = Math.cos(a) * .6; p.rotation.x = Math.sin(a) * .6; g.add(p); } const c = new THREE.Mesh(new THREE.SphereGeometry(.14, 12, 8), mat); c.position.y = .06; g.add(c); g.position.set(x, y, z); cake.add(g); };
+  for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + .3; rose(Math.cos(a) * 1.95, Math.sin(a) * 1.95, y1 + .12, i % 2 ? rasp : white); }
+  for (let i = 0; i < 4; i++) { const a = i / 4 * Math.PI * 2; rose(Math.cos(a) * 1.4, Math.sin(a) * 1.4, y2 + .12, i % 2 ? white : pink); }
+
+  // Świeczka z płomieniem (zapala się po kliknięciu)
+  const candle = put(new THREE.CylinderGeometry(.06, .06, .7, 12), white, y3 + .55 + .1);
+  const flame = new THREE.Mesh(new THREE.ConeGeometry(.09, .26, 12), new THREE.MeshBasicMaterial({ color: 0xffb347 })); flame.position.set(0, y3 + 1.15, 0); flame.visible = false; cake.add(flame);
+  let lit = false, spin = 1, t0 = 0, vis = false, raf = 0; const ptr = { x: 0, y: 0 };
+  canvas.addEventListener('click', () => { lit = !lit; flame.visible = lit; glow.intensity = lit ? 1.6 : 0; spin = 4; });
+  addEventListener('pointermove', e => { ptr.x = e.clientX / innerWidth * 2 - 1; ptr.y = e.clientY / innerHeight * 2 - 1; }, { passive: true });
+  mq.addEventListener('change', e => { still = e.matches; sync(); });
+  function frame(t) {
+    const dt = Math.min(Math.max((t - t0) / 1000, 0), .05); t0 = t;
+    spin += (1 - spin) * Math.min(1, dt * 1.1);
+    if (!still) cake.rotation.y += dt * .35 * spin;
+    if (lit) { const f = 1 + Math.sin(t / 90) * .12 + Math.sin(t / 37) * .06; flame.scale.set(1 / f, f, 1 / f); glow.intensity = 1.4 + Math.sin(t / 110) * .25; }
+    camera.position.y += ((2.2 - ptr.y * 1.2) - camera.position.y) * .05; camera.position.x += ((ptr.x * 1.6) - camera.position.x) * .05; camera.lookAt(0, 1.4, 0);
+    renderer.render(scene, camera);
+  }
+  const loop = t => { frame(t); raf = requestAnimationFrame(loop); };
+  function sync() { cancelAnimationFrame(raf); if (vis && !still) raf = requestAnimationFrame(loop); else frame(performance.now()); }
+  function size() { const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (!vis || still) frame(performance.now()); }
+  new ResizeObserver(size).observe(canvas);
+  new IntersectionObserver(([e]) => { vis = e.isIntersecting; sync(); }).observe(canvas);
+  size();
+})();
+</script>
+</body>
+</html>
