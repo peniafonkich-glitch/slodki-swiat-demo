@@ -84,6 +84,21 @@
   .sdesc { margin-top: 6px; color: #E8D3BC; }
   .sfoot { margin-top: 22px; max-width: 40em; color: #E8D3BC; }
 
+  .order .oform { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 22px; margin-top: 28px; max-width: 880px; }
+  .fld { display: flex; flex-direction: column; gap: 6px; }
+  .fld.wide { grid-column: 1 / -1; }
+  .fld label { font-weight: 700; }
+  .fld input, .fld select, .fld textarea { width: 100%; padding: 13px 14px; border-radius: 12px; border: 2px solid rgba(255, 240, 220, .3); background: var(--choc-2); color: var(--vanilla); font: 400 17px/1.4 var(--body); }
+  .fld input:focus, .fld select:focus, .fld textarea:focus { border-color: var(--rasp); outline: none; box-shadow: 0 0 0 3px rgba(224, 69, 123, .35); }
+  .fld small { color: #CDB79F; font-size: 14px; }
+  .fld .btn { align-self: flex-start; border: 0; cursor: pointer; }
+  .err { color: #FFB3C7; min-height: 1.4em; font-weight: 600; }
+  .out { margin-top: 30px; max-width: 880px; padding: 24px clamp(18px, 3vw, 32px); border-radius: 18px; background: var(--choc-2); box-shadow: inset 0 0 0 2px rgba(217, 177, 92, .55); }
+  .out h3 { font: 400 28px/1.1 var(--head); }
+  .out pre { margin: 14px 0 0; white-space: pre-wrap; font: 400 17px/1.55 var(--body); color: var(--vanilla); }
+  .out .row { margin-top: 18px; }
+  .out .btn { border: 0; cursor: pointer; }
+  @media (max-width: 560px) { .order .oform { grid-template-columns: 1fr; } }
   .how { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(24px, 6vw, 90px); align-items: start; }
   .how ol { counter-reset: s; display: grid; gap: 22px; }
   .how li { counter-increment: s; position: relative; padding-left: 60px; }
@@ -152,9 +167,36 @@
         <div class="plate"><div class="cut" id="cut"></div></div>
         <p class="sname" id="sname"></p>
         <p class="sdesc" id="sdesc"></p>
+        <p style="margin-top:18px"><button type="button" class="btn" id="pick">Zamów tort w tym smaku</button></p>
       </div>
     </div>
     <p class="sfoot">Wszystkie masy są na bazie masy budyniowej z masłem. Na specjalne życzenie można zamienić ją na bitą śmietanę. Przekrój jest poglądowy.</p>
+  </section>
+
+  <section class="order" id="zamow" aria-labelledby="zamow-t">
+    <h2 id="zamow-t">Zamów tort <em>w dwie minuty</em></h2>
+    <p class="note">Wybierz rodzaj, smak i liczbę porcji. Wycenę przygotuje pracownia po Twoim zapytaniu, bo cena zależy od dekoracji.</p>
+    <form id="oform" class="oform" novalidate>
+      <div class="fld"><label for="o-kind">Rodzaj tortu</label>
+        <select id="o-kind"><option>Tort dla dzieci</option><option>Drip cake</option><option>Tort okolicznościowy</option><option>Tort weselny</option><option>Tort komunijny</option><option>Tort na chrzest</option><option>Tort dla dorosłych</option><option>Tort firmowy</option><option>Tort 3D</option><option>Tort świąteczny</option><option>Babeczki artystyczne</option></select></div>
+      <div class="fld"><label for="o-flavour">Smak</label><select id="o-flavour"></select></div>
+      <div class="fld"><label for="o-por">Liczba porcji</label><input id="o-por" type="number" min="12" step="1" value="12" inputmode="numeric"><small>Najmniejszy okrągły tort jest na 12 porcji.</small></div>
+      <div class="fld"><label for="o-date">Odbiór najwcześniej</label><input id="o-date" type="date"><small id="o-date-h">Zamówienia na co najmniej 3 dni przed odbiorem.</small></div>
+      <div class="fld wide"><label for="o-idea">Dekoracja i pomysł</label><textarea id="o-idea" rows="3" placeholder="Np. motyw bajki, kolory, napis, link do wzoru z internetu"></textarea></div>
+      <div class="fld"><label for="o-name">Imię</label><input id="o-name" type="text" autocomplete="given-name"></div>
+      <div class="fld"><label for="o-tel">Telefon</label><input id="o-tel" type="tel" autocomplete="tel" inputmode="tel"></div>
+      <div class="fld wide"><button class="btn" type="submit">Przygotuj zapytanie</button><p id="o-err" class="err" role="alert"></p></div>
+    </form>
+    <div id="o-out" class="out" hidden aria-live="polite">
+      <h3>Twoje zapytanie</h3>
+      <pre id="o-text"></pre>
+      <div class="row">
+        <a class="btn" id="o-wa" href="#" target="_blank" rel="noopener">Wyślij na WhatsApp</a>
+        <a class="btn ghost" id="o-mail" href="#">Wyślij e-mailem</a>
+        <button type="button" class="btn ghost" id="o-copy">Skopiuj tekst</button>
+      </div>
+      <p class="note" id="o-ok"></p>
+    </div>
   </section>
 
   <section aria-labelledby="zam">
@@ -237,6 +279,42 @@
     sn.textContent = name; sd.textContent = desc;
   }
   show(0);
+
+  // Zamówienie: zapytanie o wycenę przez WhatsApp lub e-mail, bez serwera
+  const $ = id => document.getElementById(id);
+  const fl = $('o-flavour'); F.forEach(f => fl.append(new Option(f[0], f[0])));
+  $('pick').addEventListener('click', () => {
+    const i = [...list.children].findIndex(b => b.getAttribute('aria-pressed') === 'true');
+    fl.value = F[Math.max(i, 0)][0];
+    $('zamow').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => $('o-por').focus({ preventScroll: true }), 600);
+  });
+  const date = $('o-date'), kind = $('o-kind');
+  const addDays = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  function syncDate() {
+    const wedding = kind.value === 'Tort weselny';
+    date.min = addDays(wedding ? 30 : 3);
+    if (!date.value || date.value < date.min) date.value = date.min;
+    $('o-date-h').textContent = wedding ? 'Torty weselne przyjmuję minimum miesiąc wcześniej.' : 'Zamówienia na co najmniej 3 dni przed odbiorem.';
+  }
+  kind.addEventListener('change', syncDate); syncDate();
+  $('oform').addEventListener('submit', e => {
+    e.preventDefault(); const err = $('o-err'); err.textContent = '';
+    const por = parseInt($('o-por').value, 10), name = $('o-name').value.trim(), tel = $('o-tel').value.trim();
+    if (!(por >= 12)) { err.textContent = 'Najmniejszy tort jest na 12 porcji.'; return; }
+    if (!date.value || date.value < date.min) { err.textContent = 'Wybierz późniejszą datę odbioru.'; return; }
+    if (name.length < 2) { err.textContent = 'Wpisz imię.'; return; }
+    if (tel.replace(/\D/g, '').length < 9) { err.textContent = 'Wpisz numer telefonu, żeby pracownia mogła oddzwonić.'; return; }
+    const text = ['Dzień dobry, proszę o wycenę tortu.', '', `Rodzaj: ${kind.value}`, `Smak: ${fl.value}`, `Liczba porcji: ${por}`, `Odbiór najwcześniej: ${date.value}`, `Dekoracja i pomysł: ${$('o-idea').value.trim() || 'do ustalenia'}`, '', `Imię: ${name}`, `Telefon: ${tel}`].join('\n');
+    $('o-text').textContent = text;
+    $('o-wa').href = 'https://wa.me/48889264871?text=' + encodeURIComponent(text);
+    $('o-mail').href = 'mailto:torty.krakow@op.pl?subject=' + encodeURIComponent('Zapytanie o tort: ' + kind.value) + '&body=' + encodeURIComponent(text);
+    $('o-ok').textContent = 'To makieta: zapytanie nigdzie jeszcze nie poszło. Wybierz WhatsApp albo e-mail, żeby je wysłać.';
+    $('o-out').hidden = false; $('o-out').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  $('o-copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('o-text').textContent); $('o-copy').textContent = 'Skopiowano'; setTimeout(() => { $('o-copy').textContent = 'Skopiuj tekst'; }, 1800); } catch (er) { /* schowek niedostępny */ }
+  });
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
